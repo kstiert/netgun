@@ -2,10 +2,10 @@
 
 namespace Netgun.Model
 {
-    public class MongoDatabase
+    public class Database
     {
         public string Name { get; set; }
 
-        public List<MongoCollection> Collections { get; set; } 
+        public List<Collection> Collections { get; set; } 
     }
 }

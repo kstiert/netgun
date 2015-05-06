@@ -1,6 +1,6 @@
 ﻿namespace Netgun.Model
 {
-    public class MongoCollection
+    public class Collection
     {
         public string Name { get; set; } 
     }

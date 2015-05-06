@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MongoDB.Driver;
 using Netgun.Model;
+using System.Windows.Input;
+using MongoDB.Bson;
+using MongoDB.Bson.IO;
+using Netgun.Controls;
 
 namespace Netgun
 {
@@ -11,48 +16,51 @@ namespace Netgun
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly MongoClient _client;
-
-        private readonly MongoServer _server;
+        private MongoConnection _connection;
 
         public  MainWindow()
         {
             InitializeComponent();
-            _client = new MongoClient();
-            _server = new MongoServer();
-            this.Populate();
         }
 
-        public void Refresh()
+        async public void Refresh()
         {
+            await _connection.Populate();
             TreeRoot.Items.Clear();
-            foreach (var db in _server.Databases)
+            foreach (var db in _connection.Server.Databases)
             {
                 var dbItem = new TreeViewItem { Header = db.Name };
                 TreeRoot.Items.Add(dbItem);
                 foreach (var collection in db.Collections)
                 {
-                    dbItem.Items.Add(new TreeViewItem {Header = collection.Name});
+                    var collectionItem = new TreeViewItem { Header = collection.Name };
+                    collectionItem.MouseDoubleClick += CollectionDoubleClick;
+                    dbItem.Items.Add(collectionItem);
                 }
             }
         }
 
-        async public void Populate()
+        async private void CollectionDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            _server.Databases = new List<MongoDatabase>();
-            var dbCursor = await _client.ListDatabasesAsync();
-            await dbCursor.ForEachAsync(async dbBson =>
-            {
-                var dbName = dbBson["name"].AsString;
-                var db = new MongoDatabase {Name = dbName, Collections = new List<MongoCollection>()};
-                _server.Databases.Add(db);
+            var item = (TreeViewItem)sender;
+            var parent = (TreeViewItem)item.Parent;
+            var documents = await this._connection.GetDocuments(parent.Header.ToString(), item.Header.ToString());
+            MainGrid.ItemsSource = documents.Select(d => new { Document = d.ToJson() });
+        }
 
-                var collectionCursor = await _client.GetDatabase(dbName).ListCollectionsAsync();
-                await
-                    collectionCursor.ForEachAsync(
-                        collectionBson => db.Collections.Add(new MongoCollection {Name = collectionBson["name"].AsString}));
-            });
-            Dispatcher.Invoke(Refresh);
+        private void MenuExit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void MenuNewConnection_Click(object sender, RoutedEventArgs e)
+        {
+            var newConnection = new NewConnectionDialog();
+            if(newConnection.ShowDialog() ?? false)
+            {
+                this._connection = new MongoConnection(newConnection.ConnectionString.Text);
+                Refresh();
+            }
         }
     }
 }
