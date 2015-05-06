@@ -22,10 +22,26 @@
                 <ColumnDefinition Width="200" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TreeView Grid.Row="0" Grid.Column="0">
-                <TreeViewItem Name="TreeRoot" Header="DB" />
+            <TreeView Name="ConnectionTree" ItemsSource="{Binding Connections}" Grid.Row="0" Grid.Column="0">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Server.Databases}">
+                        <TextBlock Text="{Binding Server.Name}"/>
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Collections}">
+                                <TextBlock Text="{Binding Name}"/>
+                                <HierarchicalDataTemplate.ItemTemplate>
+                                    <DataTemplate>
+                                        <ItemsControl MouseDoubleClick="CollectionDoubleClick"  Tag="{Binding}">
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </ItemsControl>
+                                    </DataTemplate>
+                                </HierarchicalDataTemplate.ItemTemplate>
+                            </HierarchicalDataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>    
             </TreeView>
-            <DataGrid Name="MainGrid" Grid.Row="0" Grid.Column="1" />
+            <TabControl Name="MainTab"  Grid.Row="0" Grid.Column="1" />
         </Grid>
     </DockPanel>
 </Window>

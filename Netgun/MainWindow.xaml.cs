@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using MongoDB.Driver;
+using MongoDB.Bson.Serialization.Conventions;
 using Netgun.Model;
 using System.Windows.Input;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using Netgun.Controls;
 
 namespace Netgun
@@ -16,36 +15,27 @@ namespace Netgun
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MongoConnection _connection;
+        public List<MongoConnection> Connections { get; set; } 
 
         public  MainWindow()
         {
             InitializeComponent();
+            Connections = new List<MongoConnection>();
+            this.ConnectionTree.DataContext = this;
         }
 
-        async public void Refresh()
+        public void RefreshTree()
         {
-            await _connection.Populate();
-            TreeRoot.Items.Clear();
-            foreach (var db in _connection.Server.Databases)
-            {
-                var dbItem = new TreeViewItem { Header = db.Name };
-                TreeRoot.Items.Add(dbItem);
-                foreach (var collection in db.Collections)
-                {
-                    var collectionItem = new TreeViewItem { Header = collection.Name };
-                    collectionItem.MouseDoubleClick += CollectionDoubleClick;
-                    dbItem.Items.Add(collectionItem);
-                }
-            }
+            this.ConnectionTree.Items.Refresh();
         }
 
         async private void CollectionDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var item = (TreeViewItem)sender;
-            var parent = (TreeViewItem)item.Parent;
-            var documents = await this._connection.GetDocuments(parent.Header.ToString(), item.Header.ToString());
-            MainGrid.ItemsSource = documents.Select(d => new { Document = d.ToJson() });
+            var collection = (Collection) (sender as ItemsControl).Tag;
+            var documents = await this.Connections.Single(c => c.Server.Name == collection.ConnectionName).GetDocuments(collection.DatabaseName, collection.Name);
+            var newTab = new DocumentsTab(string.Format("{0}.{1}", collection.DatabaseName, collection.Name), documents.Select(d => new Document { Raw = d.ToJson() }).ToList());
+            MainTab.Items.Add(newTab);
+            MainTab.SelectedItem = newTab;
         }
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
@@ -53,13 +43,15 @@ namespace Netgun
             this.Close();
         }
 
-        private void MenuNewConnection_Click(object sender, RoutedEventArgs e)
+        async private void MenuNewConnection_Click(object sender, RoutedEventArgs e)
         {
             var newConnection = new NewConnectionDialog();
             if(newConnection.ShowDialog() ?? false)
             {
-                this._connection = new MongoConnection(newConnection.ConnectionString.Text);
-                Refresh();
+                var conn = new MongoConnection(newConnection.ConnectionString.Text);
+                await conn.Populate();
+                this.Connections.Add(conn);
+                RefreshTree();
             }
         }
     }

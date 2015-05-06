@@ -13,7 +13,7 @@ namespace Netgun
         public MongoConnection(string connectionString)
         {
             _client = new MongoClient(connectionString);
-            Server = new Server();
+            Server = new Server { Name = "TMP"};
         }
 
         public Server Server { get; set; }
@@ -36,7 +36,7 @@ namespace Netgun
                 var collectionCursor = await _client.GetDatabase(dbName).ListCollectionsAsync();
                 await
                     collectionCursor.ForEachAsync(
-                        collectionBson => db.Collections.Add(new Collection { Name = collectionBson["name"].AsString }));
+                        collectionBson => db.Collections.Add(new Collection { Name = collectionBson["name"].AsString, DatabaseName = dbName, ConnectionName = Server.Name}));
             });
         }
     }
