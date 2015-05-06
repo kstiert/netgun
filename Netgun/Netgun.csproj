@@ -98,6 +98,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\ActionCommand.cs" />
     <Compile Include="Controls\DocumentsTab.xaml.cs">
       <DependentUpon>DocumentsTab.xaml</DependentUpon>
     </Compile>

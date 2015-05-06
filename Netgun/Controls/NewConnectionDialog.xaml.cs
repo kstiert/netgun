@@ -22,11 +22,15 @@ namespace Netgun.Controls
         public NewConnectionDialog()
         {
             InitializeComponent();
+            this.DataContext = this;
         }
 
-        private void Connect_Click(object sender, RoutedEventArgs e)
+        public ActionCommand ConnectCommand { get { return new ActionCommand(this.Connect, Key.Enter); } }
+
+        private void Connect()
         {
             this.DialogResult = true;
+            this.Close();
         }
     }
 }

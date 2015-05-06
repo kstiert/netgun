@@ -12,12 +12,21 @@ namespace Netgun.Controls
     {
         private CollectionViewSource _documentSource;
 
-        public DocumentsTab(string header, List<Document> source)
+        public DocumentsTab(string tabName, List<Document> source)
         {
             InitializeComponent();
-            this.Header = header;
+            this.TabName = tabName;
             _documentSource = (CollectionViewSource)this.FindResource("DocumentCollectionViewSource");
             _documentSource.Source = source;
+            this.DataContext = this;
+        }
+
+        public string TabName { get; set; }
+
+        private void CloseTab_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var tabs = (TabControl)this.Parent;
+            tabs.Items.Remove(this);
         }
     }
 }

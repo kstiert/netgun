@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Netgun.Model;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Netgun
@@ -13,7 +14,6 @@ namespace Netgun
         public MongoConnection(string connectionString)
         {
             _client = new MongoClient(connectionString);
-            Server = new Server { Name = "TMP"};
         }
 
         public Server Server { get; set; }
@@ -25,8 +25,9 @@ namespace Netgun
 
         async public Task Populate()
         {
-            Server.Databases = new List<Database>();
+            Server = new Server();
             var dbCursor = await _client.ListDatabasesAsync();
+            Server.Name = _client.Cluster.Description.Servers.First().EndPoint.ToString();
             await dbCursor.ForEachAsync(async dbBson =>
             {
                 var dbName = dbBson["name"].AsString;

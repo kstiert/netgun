@@ -8,6 +8,12 @@
     <TabItem.Resources>
         <CollectionViewSource x:Key="DocumentCollectionViewSource"  CollectionViewType="ListCollectionView"/>
     </TabItem.Resources>
+    <TabItem.Header>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding TabName}"/>
+            <Button Click="CloseTab_Click" Margin="4" Width="15" Height="15" Padding="0">X</Button>
+        </StackPanel>
+    </TabItem.Header>
     <DataGrid Name="MainGrid" DataContext="{StaticResource DocumentCollectionViewSource}" ItemsSource="{Binding}" AutoGenerateColumns="False">
         <DataGrid.Columns>
             <DataGridTextColumn Binding="{Binding Path=Raw}" Header="Document" />
