@@ -1,0 +1,1 @@
+Netgun is as a very simple barebones MongoDB UI.
