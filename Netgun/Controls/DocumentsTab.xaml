@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:netgun="clr-namespace:Netgun.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <TabItem.Resources>
@@ -14,9 +15,24 @@
             <Button Click="CloseTab_Click" Margin="4" Width="15" Height="15" Padding="0">X</Button>
         </StackPanel>
     </TabItem.Header>
-    <DataGrid Name="MainGrid" DataContext="{StaticResource DocumentCollectionViewSource}" ItemsSource="{Binding}" AutoGenerateColumns="False">
-        <DataGrid.Columns>
-            <DataGridTextColumn Binding="{Binding Path=Raw}" Header="Document" />
-        </DataGrid.Columns>
-    </DataGrid>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Bottom" Height="200">
+            <ToolBar DockPanel.Dock="Top">
+                <Button Click="Button_Click">Run</Button>
+            </ToolBar>
+            <WindowsFormsHost>
+                <netgun:Terminal />
+            </WindowsFormsHost>
+        </DockPanel>
+        <DataGrid Name="MainGrid" DataContext="{StaticResource DocumentCollectionViewSource}" ItemsSource="{Binding}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Raw}" FontFamily="Consolas" Header="Document" />
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Json}" FontFamily="Consolas" />
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+    </DockPanel>
 </TabItem>

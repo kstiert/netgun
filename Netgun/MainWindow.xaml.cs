@@ -33,7 +33,7 @@ namespace Netgun
         {
             var collection = (Collection) (sender as ItemsControl).Tag;
             var documents = await this.Connections.Single(c => c.Server.Name == collection.ConnectionName).GetDocuments(collection.DatabaseName, collection.Name);
-            var newTab = new DocumentsTab(string.Format("{0}.{1}", collection.DatabaseName, collection.Name), documents.Select(d => new Document { Raw = d.ToJson() }).ToList());
+            var newTab = new DocumentsTab(string.Format("{0}.{1}", collection.DatabaseName, collection.Name), documents.Select(Document.FromBsonDocument).ToList());
             MainTab.Items.Add(newTab);
             MainTab.SelectedItem = newTab;
         }

@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using Netgun.Model;
+using System.Windows;
 
 namespace Netgun.Controls
 {
@@ -27,6 +28,11 @@ namespace Netgun.Controls
         {
             var tabs = (TabControl)this.Parent;
             tabs.Items.Remove(this);
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            MessageBox.Show("This doesn't work yet");
         }
     }
 }
