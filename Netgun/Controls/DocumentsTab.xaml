@@ -8,6 +8,13 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <TabItem.Resources>
         <CollectionViewSource x:Key="DocumentCollectionViewSource"  CollectionViewType="ListCollectionView"/>
+        <DataTemplate x:Key="DocumentRowTemplate">
+            <TreeView>
+                <TreeViewItem Header="{Binding Raw}" FontFamily="Consolas">
+                    <TreeViewItem Header="{Binding Json}" FontFamily="Consolas"/>
+                </TreeViewItem>
+            </TreeView>
+        </DataTemplate>
     </TabItem.Resources>
     <TabItem.Header>
         <StackPanel Orientation="Horizontal">
@@ -24,15 +31,10 @@
                 <netgun:Terminal />
             </WindowsFormsHost>
         </DockPanel>
-        <DataGrid Name="MainGrid" DataContext="{StaticResource DocumentCollectionViewSource}" ItemsSource="{Binding}" AutoGenerateColumns="False">
+        <DataGrid Name="MainGrid" DataContext="{StaticResource DocumentCollectionViewSource}" ItemsSource="{Binding}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Raw}" FontFamily="Consolas" Header="Document" />
+                <DataGridTemplateColumn Header="Document" CellTemplate="{StaticResource DocumentRowTemplate}"/>
             </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Json}" FontFamily="Consolas" />
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
         </DataGrid>
     </DockPanel>
 </TabItem>
