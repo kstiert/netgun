@@ -4,7 +4,7 @@ namespace Netgun.Controls
 {
     public class ActionCommand : ICommand
     {
-        private Action _action;
+        private readonly Action _action;
 
         public ActionCommand(Action action, Key key)
         {
@@ -12,7 +12,7 @@ namespace Netgun.Controls
             Key = key;
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged { add {} remove {}}
 
         public Key Key { get; set; }
 

@@ -32,8 +32,9 @@ namespace Netgun
         async private void CollectionDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var collection = (Collection) (sender as ItemsControl).Tag;
-            var documents = await this.Connections.Single(c => c.Server.Name == collection.ConnectionName).GetDocuments(collection.DatabaseName, collection.Name);
-            var newTab = new DocumentsTab(string.Format("{0}.{1}", collection.DatabaseName, collection.Name), documents.Select(Document.FromBsonDocument).ToList());
+            var connection = this.Connections.Single(c => c.Server.Name == collection.ConnectionName);
+            var documents = await connection.GetDocuments(collection.DatabaseName, collection.Name);
+            var newTab = new DocumentsTab(collection.DatabaseName, collection.Name, connection, documents.Select(Document.FromBsonDocument).ToList());
             MainTab.Items.Add(newTab);
             MainTab.SelectedItem = newTab;
         }

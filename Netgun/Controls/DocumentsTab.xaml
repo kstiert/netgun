@@ -25,9 +25,9 @@
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom" Height="200">
             <ToolBar DockPanel.Dock="Top">
-                <Button Click="Button_Click">Run</Button>
+                <Button Command="{Binding RunCommand}">Run</Button>
             </ToolBar>
-            <WindowsFormsHost>
+            <WindowsFormsHost Name="WinFormsHost">
                 <netgun:Terminal />
             </WindowsFormsHost>
         </DockPanel>

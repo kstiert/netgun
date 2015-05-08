@@ -1,13 +1,12 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.IO;
+﻿using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Documents;
+using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Bindings;
-using MongoDB.Driver.Core.Operations;
-using MongoDB.Driver.Core.WireProtocol.Messages.Encoders;
 using Netgun.Model;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Netgun
@@ -15,34 +14,39 @@ namespace Netgun
     public class MongoConnection
     {
         private readonly MongoClient _client;
+        private readonly MongoUrl _url;
 
         public MongoConnection(string connectionString)
         {
-            _client = new MongoClient(connectionString);
+            _url = new MongoUrl(connectionString);
+            _client = new MongoClient(_url);
         }
 
         public Server Server { get; set; }
 
         public Task<List<BsonDocument>> GetDocuments(string db, string collection)
         {
-            return this._client.GetDatabase(db).GetCollection<BsonDocument>(collection).Find(b => true).ToListAsync();
+            return this._client.GetDatabase(db).GetCollection<BsonDocument>(collection). Find(b => true).ToListAsync();
         }
 
-        public Task<BsonValue> Eval(string db, string js)
+        public List<BsonDocument> Eval(string db, string js)
         {
-            var dbNamespace = new DatabaseNamespace(db);
-            var encodeSettings = new MessageEncoderSettings
-            {
-                { MessageEncoderSettingsName.GuidRepresentation, GuidRepresentation.Standard},
-                { MessageEncoderSettingsName.ReadEncoding, Utf8Encodings.Strict },
-                { MessageEncoderSettingsName.WriteEncoding, Utf8Encodings.Strict }
-            };
-            var op = new EvalOperation(dbNamespace, new BsonJavaScript(js), encodeSettings);
-
-            using(var binding = new WritableServerBinding(this._client.Cluster))
-            {
-                return  op.ExecuteAsync(binding, CancellationToken.None);
-            }
+            var shell = new Process();
+            var output = new List<BsonDocument>();
+            shell.StartInfo.FileName = "mongo.exe";
+            shell.StartInfo.Arguments = string.Format("--quiet -u {0} -p {1} --authenticationDatabase {2} {3}/{4}", _url.Username, _url.Password, _url.AuthenticationSource, _url.Servers.First(), db);
+            shell.StartInfo.UseShellExecute = false;
+            shell.StartInfo.CreateNoWindow = true;
+            shell.StartInfo.RedirectStandardOutput = true;
+            shell.StartInfo.RedirectStandardInput = true;
+            shell.OutputDataReceived += (sender, args) => {try{output.Add(BsonDocument.Parse(args.Data));}catch{}};
+            shell.Start();
+            shell.BeginOutputReadLine();
+            shell.StandardInput.WriteLine("DBQuery.shellBatchSize = {0}", int.MaxValue);
+            shell.StandardInput.WriteLine(Regex.Split(js, "\r\n|\r|\n")[0]);
+            shell.StandardInput.WriteLine("exit");
+            shell.WaitForExit();
+            return output;
         }
 
         async public Task Populate()
