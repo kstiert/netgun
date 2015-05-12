@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Documents;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Clusters;
 using Netgun.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +28,7 @@ namespace Netgun
 
         public Task<List<BsonDocument>> GetDocuments(string db, string collection)
         {
-            return this._client.GetDatabase(db).GetCollection<BsonDocument>(collection). Find(b => true).ToListAsync();
+            return this._client.GetDatabase(db).GetCollection<BsonDocument>(collection).Find(b => true).ToListAsync();
         }
 
         public List<BsonDocument> Eval(string db, string js)
@@ -53,7 +55,16 @@ namespace Netgun
         {
             Server = new Server();
             var dbCursor = await _client.ListDatabasesAsync();
-            Server.Name = _client.Cluster.Description.Servers.First().EndPoint.ToString();
+            if (_client.Cluster.Description.Type == ClusterType.ReplicaSet) // TODO: Sharded/Unknown case.
+            {
+                Server.Name = _client.Cluster.Settings.ReplicaSetName;
+            }
+            else
+            {
+                var dns = _client.Cluster.Description.Servers.First().EndPoint as DnsEndPoint;
+                Server.Name = dns != null ? string.Format("{0}:{1}", dns.Host, dns.Port) : _client.Cluster.Description.Servers.First().EndPoint.ToString();
+            }
+
             await dbCursor.ForEachAsync(async dbBson =>
             {
                 var dbName = dbBson["name"].AsString;
