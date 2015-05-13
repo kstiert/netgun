@@ -1,4 +1,6 @@
-﻿namespace Netgun.Model
+﻿using MongoDB.Driver.Core.Clusters;
+
+namespace Netgun.Model
 {
     public class Collection
     {
@@ -6,6 +8,6 @@
 
         public string DatabaseName { get; set; }
 
-        public string ConnectionName { get; set; }
+        public string ConnectionId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -22,7 +23,10 @@ namespace Netgun
         {
             _url = new MongoUrl(connectionString);
             _client = new MongoClient(_url);
+            this.ConnectionId = Guid.NewGuid().ToString();
         }
+
+        public string ConnectionId { get; private set; }
 
         public Server Server { get; set; }
 
@@ -79,7 +83,7 @@ namespace Netgun
                 var collectionCursor = await _client.GetDatabase(dbName).ListCollectionsAsync();
                 await
                     collectionCursor.ForEachAsync(
-                        collectionBson => db.Collections.Add(new Collection { Name = collectionBson["name"].AsString, DatabaseName = dbName, ConnectionName = Server.Name}));
+                        collectionBson => db.Collections.Add(new Collection { Name = collectionBson["name"].AsString, DatabaseName = dbName, ConnectionId = this.ConnectionId}));
             });
         }
     }
