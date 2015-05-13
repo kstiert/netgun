@@ -33,14 +33,20 @@ namespace Netgun
 
         public List<BsonDocument> Eval(string db, string js)
         {
+            // TODO: factor this out into something more flexible
             var shell = new Process();
             var output = new List<BsonDocument>();
             shell.StartInfo.FileName = "mongo.exe";
-            shell.StartInfo.Arguments = string.Format("--quiet -u {0} -p {1} --authenticationDatabase {2} {3}/{4}", _url.Username, _url.Password, _url.AuthenticationSource, _url.Servers.First(), db);
+            shell.StartInfo.Arguments = "--quiet ";
+            shell.StartInfo.Arguments += _url.Username != null ? string.Format("-u {0} ", _url.Username) : string.Empty;
+            shell.StartInfo.Arguments += _url.Password!= null ? string.Format("-p {0} ", _url.Password) : string.Empty;
+            shell.StartInfo.Arguments += _url.AuthenticationSource != null ? string.Format("--authenticationDatabase {0} ", _url.AuthenticationSource) : string.Empty;
+            shell.StartInfo.Arguments += string.Format("{0}/{1}", _url.Servers.First(), db);
             shell.StartInfo.UseShellExecute = false;
             shell.StartInfo.CreateNoWindow = true;
             shell.StartInfo.RedirectStandardOutput = true;
             shell.StartInfo.RedirectStandardInput = true;
+            shell.StartInfo.RedirectStandardError = true;
             shell.OutputDataReceived += (sender, args) => {try{output.Add(BsonDocument.Parse(args.Data));}catch{}};
             shell.Start();
             shell.BeginOutputReadLine();
