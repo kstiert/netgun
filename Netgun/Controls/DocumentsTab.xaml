@@ -31,7 +31,7 @@
                 <netgun:Terminal />
             </WindowsFormsHost>
         </DockPanel>
-        <DataGrid Name="MainGrid" DataContext="{StaticResource DocumentCollectionViewSource}" ItemsSource="{Binding}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Name="MainGrid" DataContext="{StaticResource DocumentCollectionViewSource}" ItemsSource="{Binding}"  AutoGenerateColumns="False" IsReadOnly="True" VirtualizingStackPanel.ScrollUnit="Pixel">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Document" CellTemplate="{StaticResource DocumentRowTemplate}"/>
             </DataGrid.Columns>
