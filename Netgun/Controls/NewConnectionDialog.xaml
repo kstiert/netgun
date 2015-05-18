@@ -6,7 +6,21 @@
         <KeyBinding Command="{Binding ConnectCommand}" Key="Enter" />
     </Window.InputBindings>
     <StackPanel Orientation="Vertical">
-        <TextBox Name="ConnectionString" Margin="10" />
+        <Grid>
+            <TextBox Name="ConnectionString" Margin="10" />
+            <TextBlock IsHitTestVisible="False" Text="mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=ConnectionString}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
         <Button Width="150" Height="30" Command="{Binding ConnectCommand}">Connect</Button>
     </StackPanel>
 </Window>
