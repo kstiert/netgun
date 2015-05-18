@@ -57,6 +57,9 @@
     <Reference Include="MongoDB.Driver.Core">
       <HintPath>packages\MongoDB.Driver.Core.2.0.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Driver.Legacy">
+      <HintPath>packages\mongocsharpdriver.2.0.0\lib\net45\MongoDB.Driver.Legacy.dll</HintPath>
+    </Reference>
     <Reference Include="ScintillaNET">
       <HintPath>packages\jacobslusser.ScintillaNET.3.2.0-rc\lib\net40\ScintillaNET.dll</HintPath>
     </Reference>

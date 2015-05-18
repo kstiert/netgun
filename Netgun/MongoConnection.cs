@@ -2,8 +2,6 @@
 using System.Diagnostics;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Windows.Documents;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Clusters;
@@ -45,7 +43,7 @@ namespace Netgun
             shell.StartInfo.Arguments += _url.Username != null ? string.Format("-u {0} ", _url.Username) : string.Empty;
             shell.StartInfo.Arguments += _url.Password!= null ? string.Format("-p {0} ", _url.Password) : string.Empty;
             shell.StartInfo.Arguments += _url.AuthenticationSource != null ? string.Format("--authenticationDatabase {0} ", _url.AuthenticationSource) : string.Empty;
-            shell.StartInfo.Arguments += string.Format("{0}/{1}", _url.Servers.First(), db);
+            shell.StartInfo.Arguments += string.Format("{0}/{1}", _client.GetServer().Primary.Address, db);
             shell.StartInfo.UseShellExecute = false;
             shell.StartInfo.CreateNoWindow = true;
             shell.StartInfo.RedirectStandardOutput = true;
