@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 using Netgun.Model;
 
 namespace Netgun.Controls
@@ -31,18 +30,18 @@ namespace Netgun.Controls
 
         public Terminal Terminal { get { return (Terminal) this.WinFormsHost.Child; } }
 
-        public ICommand RunCommand { get { return new ActionCommand(this.Run, Key.F5);} }
+        public ActionCommand RunCommand { get { return new ActionCommand(this.Run);} }
+
+        public void Run()
+        {
+            _documentSource.Source = this._connection.Eval(this._db, this.Terminal.Text).Select(Document.FromBsonDocument).ToList();
+            _documentSource.View.Refresh();
+        }
 
         private void CloseTab_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             var tabs = (TabControl)this.Parent;
             tabs.Items.Remove(this);
-        }
-
-        private void Run()
-        {
-            _documentSource.Source = this._connection.Eval(this._db, this.Terminal.Text).Select(Document.FromBsonDocument).ToList();
-            _documentSource.View.Refresh();
         }
     }
 }

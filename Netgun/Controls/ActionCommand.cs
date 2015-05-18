@@ -6,15 +6,12 @@ namespace Netgun.Controls
     {
         private readonly Action _action;
 
-        public ActionCommand(Action action, Key key)
+        public ActionCommand(Action action)
         {
             _action = action;
-            Key = key;
         }
 
         public event EventHandler CanExecuteChanged { add {} remove {}}
-
-        public Key Key { get; set; }
 
         public bool CanExecute(object parameter)
         {

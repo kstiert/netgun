@@ -1,5 +1,5 @@
-﻿using ScintillaNET;
-using System.Drawing;
+﻿using System.Windows.Forms;
+using ScintillaNET;
 
 namespace Netgun.Controls
 {
@@ -8,6 +8,11 @@ namespace Netgun.Controls
         public Terminal()
         {
             Lexer = Lexer.Cpp; // Close enough
+        }
+
+        protected override bool IsInputKey(Keys keyData)
+        {
+            return false; // Stops the terminal from eating all key input
         }
     }
 }

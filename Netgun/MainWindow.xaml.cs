@@ -2,10 +2,8 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using MongoDB.Bson.Serialization.Conventions;
 using Netgun.Model;
 using System.Windows.Input;
-using MongoDB.Bson;
 using Netgun.Controls;
 
 namespace Netgun
@@ -22,11 +20,27 @@ namespace Netgun
             InitializeComponent();
             Connections = new List<MongoConnection>();
             this.ConnectionTree.DataContext = this;
+            this.DataContext = this;
+        }
+
+        public ICommand RunCommand 
+        {
+            get { return new ActionCommand(this.RunSelectedTab); }
         }
 
         public void RefreshTree()
         {
             this.ConnectionTree.Items.Refresh();
+        }
+
+        private void RunSelectedTab()
+        {
+            var tab = this.MainTab.SelectedItem as DocumentsTab;
+
+            if (tab != null)
+            {
+                tab.Run();
+            }
         }
 
         async private void CollectionDoubleClick(object sender, MouseButtonEventArgs e)
@@ -35,6 +49,7 @@ namespace Netgun
             var connection = this.Connections.Single(c => c.ConnectionId == collection.ConnectionId);
             var documents = await connection.GetDocuments(collection.DatabaseName, collection.Name);
             var newTab = new DocumentsTab(collection.DatabaseName, collection.Name, connection, documents.Select(Document.FromBsonDocument).ToList());
+            newTab.Terminal.Text = string.Format("db.{0}.find()", collection.Name);
             MainTab.Items.Add(newTab);
             MainTab.SelectedItem = newTab;
         }

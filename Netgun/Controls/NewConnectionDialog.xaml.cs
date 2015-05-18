@@ -25,7 +25,7 @@ namespace Netgun.Controls
             this.DataContext = this;
         }
 
-        public ActionCommand ConnectCommand { get { return new ActionCommand(this.Connect, Key.Enter); } }
+        public ActionCommand ConnectCommand { get { return new ActionCommand(this.Connect); } }
 
         private void Connect()
         {
