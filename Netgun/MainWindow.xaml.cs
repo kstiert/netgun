@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -59,15 +60,23 @@ namespace Netgun
             this.Close();
         }
 
-        async private void MenuNewConnection_Click(object sender, RoutedEventArgs e)
+        async private void MenuNewConnection_Click(object sender, RoutedEventArgs args)
         {
             var newConnection = new NewConnectionDialog();
             if(newConnection.ShowDialog() ?? false)
             {
-                var conn = new MongoConnection(newConnection.ConnectionString.Text);
-                await conn.Populate();
-                this.Connections.Add(conn);
-                RefreshTree();
+                try
+                {
+                    var conn = new MongoConnection(newConnection.ConnectionString.Text);
+                    await conn.Populate();
+                    this.Connections.Add(conn);
+                    RefreshTree();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "Connection Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
             }
         }
     }
