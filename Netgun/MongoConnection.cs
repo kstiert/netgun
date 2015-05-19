@@ -82,7 +82,9 @@ namespace Netgun
                 await
                     collectionCursor.ForEachAsync(
                         collectionBson => db.Collections.Add(new Collection { Name = collectionBson["name"].AsString, DatabaseName = dbName, ConnectionId = this.ConnectionId}));
+                db.Collections = db.Collections.OrderBy(c => c.Name).ToList();
             });
+            Server.Databases = Server.Databases.OrderBy(db => db.Name).ToList();
         }
     }
 }
