@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using Netgun.Model;
 
 namespace Netgun.Controls
@@ -42,6 +43,13 @@ namespace Netgun.Controls
         {
             var tabs = (TabControl)this.Parent;
             tabs.Items.Remove(this);
+        }
+
+        private void MainGrid_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // Always use mouse wheel to scroll
+            var scroll = MainGrid.GetScrollbar();
+            scroll.ScrollToVerticalOffset(scroll.VerticalOffset - e.Delta);
         }
     }
 }

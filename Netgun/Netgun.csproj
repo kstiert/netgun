@@ -103,6 +103,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controls\ActionCommand.cs" />
+    <Compile Include="Controls\ControlHelpers.cs" />
     <Compile Include="Controls\DocumentsTab.xaml.cs">
       <DependentUpon>DocumentsTab.xaml</DependentUpon>
     </Compile>
@@ -163,6 +164,7 @@
       <Link>ssleay32.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="refresh.png" />
     <Resource Include="netgun.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
