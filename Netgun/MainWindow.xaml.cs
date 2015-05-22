@@ -65,15 +65,22 @@ namespace Netgun
             var newConnection = new NewConnectionDialog();
             if(newConnection.ShowDialog() ?? false)
             {
+                MongoConnection conn = null;
                 try
                 {
-                    var conn = new MongoConnection(newConnection.ConnectionString.Text);
-                    await conn.Populate();
+                    conn = new MongoConnection(newConnection.ConnectionString.Text);
                     this.Connections.Add(conn);
+                    RefreshTree();
+                    await conn.Populate();
                     RefreshTree();
                 }
                 catch (Exception e)
                 {
+                    if(conn != null && this.Connections.Contains(conn))
+                    {
+                        this.Connections.Remove(conn);
+                        RefreshTree();
+                    }
                     MessageBox.Show(e.Message, "Connection Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 

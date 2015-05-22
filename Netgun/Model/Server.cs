@@ -9,6 +9,8 @@ namespace Netgun.Model
             Databases = new List<Database>();
         }
 
+        public bool Loading  { get; set; }
+
         public string Name { get; set; }
 
         public List<Database> Databases { get; set; }

@@ -10,6 +10,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New Connection" Click="MenuNewConnection_Click" />
+                <MenuItem Header="Recent Connections" IsEnabled="False"/>
                 <Separator />
                 <MenuItem Header="_Exit" Click="MenuExit_Click"/>
             </MenuItem>
@@ -25,14 +26,49 @@
             <TreeView Name="ConnectionTree" ItemsSource="{Binding Connections}" Grid.Row="0" Grid.Column="0">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Server.Databases}">
-                        <TextBlock Text="{Binding Server.Name}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Resources\refresh.png" Name="ServerImage" RenderTransformOrigin="0.5,0.5">
+                                <Image.RenderTransform>
+                                    <RotateTransform x:Name="AnimatedRotateTransform" Angle="0" />
+                                </Image.RenderTransform>
+                            </Image>
+                            <TextBlock Text="{Binding Server.Name}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <HierarchicalDataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Server.Loading}" Value="True">
+                                <Setter TargetName="ServerImage" Property="Source" Value="Resources\refresh.png" />
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ServerImage" Storyboard.TargetProperty="(Image.RenderTransform).(RotateTransform.Angle)" To="360" Duration="0:0:1" RepeatBehavior="Forever" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Server.Loading}" Value="False">
+                                <Setter TargetName="ServerImage" Property="Source" Value="Resources\server.png" />
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ServerImage" Storyboard.TargetProperty="(Image.RenderTransform).(RotateTransform.Angle)" To="0" Duration="0:0:1" RepeatBehavior="Forever" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </HierarchicalDataTemplate.Triggers>
                         <HierarchicalDataTemplate.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Collections}">
-                                <TextBlock Text="{Binding Name}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="Resources\database.png" />
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                </StackPanel>
                                 <HierarchicalDataTemplate.ItemTemplate>
                                     <DataTemplate>
                                         <ItemsControl MouseDoubleClick="CollectionDoubleClick"  Tag="{Binding}">
-                                            <TextBlock Text="{Binding Name}"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="Resources\collection.png" />
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                            </StackPanel>
                                         </ItemsControl>
                                     </DataTemplate>
                                 </HierarchicalDataTemplate.ItemTemplate>

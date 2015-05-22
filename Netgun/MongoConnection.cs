@@ -21,6 +21,7 @@ namespace Netgun
         {
             _url = new MongoUrl(connectionString);
             _client = new MongoClient(_url);
+            Server = new Server();
             this.ConnectionId = Guid.NewGuid().ToString();
         }
 
@@ -61,7 +62,8 @@ namespace Netgun
 
         async public Task Populate()
         {
-            Server = new Server();
+            Server.Loading = true;
+            Server.Name = "Loading...";
             var dbCursor = await _client.ListDatabasesAsync();
             if (_client.Cluster.Description.Type == ClusterType.ReplicaSet) // TODO: Sharded/Unknown case.
             {
@@ -85,6 +87,7 @@ namespace Netgun
                 db.Collections = db.Collections.OrderBy(c => c.Name).ToList();
             });
             Server.Databases = Server.Databases.OrderBy(db => db.Name).ToList();
+            Server.Loading = false;
         }
     }
 }

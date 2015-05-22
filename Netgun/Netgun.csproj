@@ -36,7 +36,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>netgun.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\netgun.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Threading.Tasks">
@@ -164,8 +164,11 @@
       <Link>ssleay32.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="refresh.png" />
-    <Resource Include="netgun.ico" />
+    <Resource Include="Resources\collection.png" />
+    <Resource Include="Resources\database.png" />
+    <Resource Include="Resources\server.png" />
+    <Resource Include="Resources\refresh.png" />
+    <Resource Include="Resources\netgun.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
