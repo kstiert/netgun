@@ -11,7 +11,14 @@
         <DataTemplate x:Key="DocumentRowTemplate">
             <TreeView>
                 <TreeViewItem Header="{Binding Raw}" FontFamily="Consolas">
-                    <TreeViewItem Header="{Binding Json}" FontFamily="Consolas"/>
+                    <TreeViewItem FontFamily="Consolas">
+                        <TreeViewItem.Header>
+                            <TextBox Background="Transparent"
+                                 BorderThickness="0"
+                                 Text="{Binding Json, Mode=OneWay}"
+                                 IsReadOnly="True" />
+                        </TreeViewItem.Header>
+                    </TreeViewItem>
                 </TreeViewItem>
             </TreeView>
         </DataTemplate>
