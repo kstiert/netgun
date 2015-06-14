@@ -33,6 +33,13 @@
         <DockPanel DockPanel.Dock="Bottom" Height="200">
             <ToolBar DockPanel.Dock="Top">
                 <Button Command="{Binding RunCommand}">Run</Button>
+                <Button Command="{Binding LeftCommand}" Width="24" Height="24">
+                    <Image Source="/Resources/left.png" />
+                </Button>
+                <Label Name="PagingLabel" >0 of 0</Label> 
+                <Button Command="{Binding RightCommand}" Width="24" Height="24">
+                    <Image Source="/Resources/right.png" />
+                </Button>
             </ToolBar>
             <WindowsFormsHost Name="WinFormsHost">
                 <netgun:Terminal />

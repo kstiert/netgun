@@ -27,7 +27,7 @@
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Server.Databases}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Resources\refresh.png" Name="ServerImage" RenderTransformOrigin="0.5,0.5">
+                            <Image Source="Resources/refresh.png" Name="ServerImage" RenderTransformOrigin="0.5,0.5">
                                 <Image.RenderTransform>
                                     <RotateTransform x:Name="AnimatedRotateTransform" Angle="0" />
                                 </Image.RenderTransform>
@@ -36,7 +36,7 @@
                         </StackPanel>
                         <HierarchicalDataTemplate.Triggers>
                             <DataTrigger Binding="{Binding Server.Loading}" Value="True">
-                                <Setter TargetName="ServerImage" Property="Source" Value="Resources\refresh.png" />
+                                <Setter TargetName="ServerImage" Property="Source" Value="Resources/refresh.png" />
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
@@ -46,7 +46,7 @@
                                 </DataTrigger.EnterActions>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Server.Loading}" Value="False">
-                                <Setter TargetName="ServerImage" Property="Source" Value="Resources\server.png" />
+                                <Setter TargetName="ServerImage" Property="Source" Value="Resources/server.png" />
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
@@ -59,14 +59,14 @@
                         <HierarchicalDataTemplate.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Collections}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="Resources\database.png" />
+                                    <Image Source="Resources/database.png" />
                                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <HierarchicalDataTemplate.ItemTemplate>
                                     <DataTemplate>
                                         <ItemsControl MouseDoubleClick="CollectionDoubleClick"  Tag="{Binding}">
                                             <StackPanel Orientation="Horizontal">
-                                                <Image Source="Resources\collection.png" />
+                                                <Image Source="Resources/collection.png" />
                                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </ItemsControl>

@@ -15,28 +15,68 @@ namespace Netgun.Controls
         private CollectionViewSource _documentSource;
         private string _db;
         private MongoConnection _connection;
+        private List<Document> _source;
+        private int _page, _pageCount;
 
         public DocumentsTab(string db, string collection, MongoConnection conn, List<Document> source)
         {
+            _page = 0;
+            _pageCount = 50;
+            _source = source;
             InitializeComponent();
             this.TabName = string.Format("{0}.{1}", db, collection);
             _documentSource = (CollectionViewSource)this.FindResource("DocumentCollectionViewSource");
-            _documentSource.Source = source;
             _db = db;
             _connection = conn;
             this.DataContext = this;
+            Refresh();
         }
 
         public string TabName { get; set; }
 
+        public int TotalPages 
+        { 
+            get
+            {
+                return (_source.Count / _pageCount) + (_source.Count % _pageCount != 0 ? 1 : 0);
+            }
+        }
+
         public Terminal Terminal { get { return (Terminal) this.WinFormsHost.Child; } }
 
-        public ActionCommand RunCommand { get { return new ActionCommand(this.Run);} }
+        public ActionCommand RunCommand { get { return new ActionCommand(this.Run); } }
+        public ActionCommand RightCommand { get { return new ActionCommand(this.PageRight); } }
+        public ActionCommand LeftCommand { get { return new ActionCommand(this.PageLeft); } }
 
         public void Run()
         {
-            _documentSource.Source = this._connection.Eval(this._db, this.Terminal.Text).Select(Document.FromBsonDocument).ToList();
+            _source = this._connection.Eval(this._db, this.Terminal.Text).Select(Document.FromBsonDocument).ToList();
+            Refresh();
+        }
+
+        private void Refresh()
+        {
+            _documentSource.Source = _source.Skip(_page * _pageCount).Take(_pageCount).ToList();
             _documentSource.View.Refresh();
+            this.PagingLabel.Content = string.Format("{0} of {1}", _page, TotalPages);
+        }
+
+        private void PageRight()
+        {
+            if(_page < TotalPages)
+            {
+                _page++;
+                Refresh();
+            }
+        }
+
+        private void PageLeft()
+        {
+            if(_page > 0)
+            {
+                _page--;
+                Refresh();
+            }
         }
 
         private void CloseTab_Click(object sender, System.Windows.RoutedEventArgs e)
