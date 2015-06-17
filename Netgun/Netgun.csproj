@@ -124,6 +124,7 @@
     <Compile Include="Model\Document.cs" />
     <Compile Include="Model\Server.cs" />
     <Compile Include="MongoConnection.cs" />
+    <Compile Include="MongoConsoleException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

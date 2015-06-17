@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -50,7 +51,17 @@ namespace Netgun.Controls
 
         public void Run()
         {
-            _source = this._connection.Eval(this._db, this.Terminal.Text).Select(Document.FromBsonDocument).ToList();
+            try
+            {
+                _source = this._connection.Eval(this._db, this.Terminal.Text).Select(Document.FromBsonDocument).ToList();
+                StatusLabel.Content = string.Format("{0} Results", _source.Count);
+            }
+            catch(MongoConsoleException e)
+            {
+                _source = new List<Document>();
+                StatusLabel.Content = string.Format("Error: {0}", e.Message);
+            }
+            
             Refresh();
         }
 

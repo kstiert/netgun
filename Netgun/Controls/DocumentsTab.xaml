@@ -41,6 +41,9 @@
                     <Image Source="/Resources/right.png" />
                 </Button>
             </ToolBar>
+            <StackPanel DockPanel.Dock="Bottom">
+                <Label Name="StatusLabel" />
+            </StackPanel>
             <WindowsFormsHost Name="WinFormsHost">
                 <netgun:Terminal />
             </WindowsFormsHost>

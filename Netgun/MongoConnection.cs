@@ -39,6 +39,7 @@ namespace Netgun
             // TODO: factor this out into something more flexible
             var shell = new Process();
             var output = new List<BsonDocument>();
+            var raw = string.Empty;
             shell.StartInfo.FileName = "mongo.exe";
             shell.StartInfo.Arguments = "--quiet ";
             shell.StartInfo.Arguments += _url.Username != null ? string.Format("-u {0} ", _url.Username) : string.Empty;
@@ -49,15 +50,29 @@ namespace Netgun
             shell.StartInfo.CreateNoWindow = true;
             shell.StartInfo.RedirectStandardOutput = true;
             shell.StartInfo.RedirectStandardInput = true;
-            shell.StartInfo.RedirectStandardError = true;
-            shell.OutputDataReceived += (sender, args) => {try{output.Add(BsonDocument.Parse(args.Data));}catch{}};
+            shell.OutputDataReceived += (sender, args) =>
+            {
+                try
+                {
+                    output.Add(BsonDocument.Parse(args.Data));
+                }
+                catch
+                {
+                    if (args.Data != "2147483647")
+                    {
+                        raw += args.Data;
+                    }
+                }
+            };
             shell.Start();
-            shell.BeginOutputReadLine();
             shell.StandardInput.WriteLine("DBQuery.shellBatchSize = {0}", int.MaxValue);
+            shell.BeginOutputReadLine();
             shell.StandardInput.WriteLine(Regex.Split(js, "\r\n|\r|\n")[0]);
+            shell.StandardInput.WriteLine(); // Break out of any unmatched parens
+            shell.StandardInput.WriteLine();
             shell.StandardInput.WriteLine("exit");
             shell.WaitForExit();
-            return output;
+            return output.Count == 0 ? new List<BsonDocument> {new BsonDocument("Output", raw)} : output;
         }
 
         async public Task Populate()
