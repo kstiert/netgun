@@ -5,6 +5,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Netgun.Model;
+using System.Windows.Media;
+using System.Windows;
 
 namespace Netgun.Controls
 {
@@ -30,6 +32,8 @@ namespace Netgun.Controls
             _db = db;
             _connection = conn;
             this.DataContext = this;
+            StatusLabel.Content = string.Format("{0} Results", _source.Count);
+            StatusLabel.Background = Brushes.LightBlue;
             Refresh();
         }
 
@@ -55,11 +59,13 @@ namespace Netgun.Controls
             {
                 _source = this._connection.Eval(this._db, this.Terminal.Text).Select(Document.FromBsonDocument).ToList();
                 StatusLabel.Content = string.Format("{0} Results", _source.Count);
+                StatusLabel.Background = Brushes.LightBlue;
             }
             catch(MongoConsoleException e)
             {
                 _source = new List<Document>();
-                StatusLabel.Content = string.Format("Error: {0}", e.Message);
+                StatusLabel.Content = e.Message;
+                StatusLabel.Background = Brushes.OrangeRed;
             }
             
             Refresh();

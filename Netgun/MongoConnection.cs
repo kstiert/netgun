@@ -72,6 +72,10 @@ namespace Netgun
             shell.StandardInput.WriteLine();
             shell.StandardInput.WriteLine("exit");
             shell.WaitForExit();
+            if(raw.ToLower().Contains("error"))
+            {
+                throw new MongoConsoleException(raw.Replace("\t", string.Empty).Replace("\n", string.Empty));
+            }
             return output.Count == 0 ? new List<BsonDocument> {new BsonDocument("Output", raw)} : output;
         }
 
