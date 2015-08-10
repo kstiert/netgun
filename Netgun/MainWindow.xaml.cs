@@ -86,5 +86,17 @@ namespace Netgun
 
             }
         }
+
+        async private void RefreshServer(object sender, RoutedEventArgs e)
+        {
+            var item = e.Source as MenuItem;
+            var connId = item.CommandParameter as string;
+            var conn = this.Connections.First(c => c.ConnectionId ==  connId);
+            conn.Clear();
+            this.RefreshTree();
+            await conn.Populate();
+            this.RefreshTree();
+
+        }
     }
 }

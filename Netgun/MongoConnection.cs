@@ -75,6 +75,12 @@ namespace Netgun
             return output.Count == 0 ? new List<BsonDocument> {new BsonDocument("Output", raw)} : output;
         }
 
+        public void Clear()
+        {
+            Server.Databases.Clear();
+            Server.Loading = true;
+        }
+
         async public Task Populate()
         {
             Server.Loading = true;
