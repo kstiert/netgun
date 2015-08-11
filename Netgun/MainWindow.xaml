@@ -10,7 +10,18 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New Connection" Click="MenuNewConnection_Click" />
-                <MenuItem Header="Recent Connections" IsEnabled="False"/>
+                <MenuItem Header="Recent Connections" Name="RecentConnectionMenu" ItemsSource="{Binding RecentConnections}" Click="RecentConnection_Click">
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="CommandParameter" Value="{Binding ConnectionString}" />
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="_Exit" Click="MenuExit_Click"/>
             </MenuItem>

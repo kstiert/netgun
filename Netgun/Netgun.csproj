@@ -60,6 +60,10 @@
     <Reference Include="MongoDB.Driver.Legacy">
       <HintPath>packages\mongocsharpdriver.2.0.0\lib\net45\MongoDB.Driver.Legacy.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ScintillaNET">
       <HintPath>packages\jacobslusser.ScintillaNET.3.2.0-rc\lib\net40\ScintillaNET.dll</HintPath>
     </Reference>
@@ -102,6 +106,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\Model\SavedConnection.cs" />
     <Compile Include="Controls\ActionCommand.cs" />
     <Compile Include="Controls\ControlHelpers.cs" />
     <Compile Include="Controls\DocumentsTab.xaml.cs">
@@ -173,6 +179,7 @@
     <Resource Include="Resources\refresh.png" />
     <Resource Include="Resources\netgun.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">

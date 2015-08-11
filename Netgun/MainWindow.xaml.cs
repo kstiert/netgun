@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using Netgun.Model;
 using System.Windows.Input;
 using Netgun.Controls;
+using Netgun.Config;
+using Netgun.Config.Model;
 
 namespace Netgun
 {
@@ -16,12 +18,15 @@ namespace Netgun
     {
         public List<MongoConnection> Connections { get; set; } 
 
+        public List<SavedConnection> RecentConnections { get { return Configuration.Current.RecentConnections; } }
+
         public  MainWindow()
         {
             InitializeComponent();
             Connections = new List<MongoConnection>();
             this.ConnectionTree.DataContext = this;
             this.DataContext = this;
+            Configuration.Load();
         }
 
         public ICommand RunCommand 
@@ -60,30 +65,42 @@ namespace Netgun
             this.Close();
         }
 
-        async private void MenuNewConnection_Click(object sender, RoutedEventArgs args)
+        private void MenuNewConnection_Click(object sender, RoutedEventArgs args)
         {
             var newConnection = new NewConnectionDialog();
             if(newConnection.ShowDialog() ?? false)
             {
-                MongoConnection conn = null;
-                try
-                {
-                    conn = new MongoConnection(newConnection.ConnectionString.Text);
-                    this.Connections.Add(conn);
-                    RefreshTree();
-                    await conn.Populate();
-                    RefreshTree();
-                }
-                catch (Exception e)
-                {
-                    if(conn != null && this.Connections.Contains(conn))
-                    {
-                        this.Connections.Remove(conn);
-                        RefreshTree();
-                    }
-                    MessageBox.Show(e.Message, "Connection Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                Connect(newConnection.ConnectionString.Text);
+            }
+        }
 
+        private void RecentConnection_Click(object sender, RoutedEventArgs e)
+        {
+            var item = e.OriginalSource as MenuItem;
+            var connectionString = item.CommandParameter as string;
+            Connect(connectionString);
+        }
+
+        async private void Connect(string connectionString)
+        {
+            MongoConnection conn = null;
+            try
+            {
+                conn = new MongoConnection(connectionString);
+                this.Connections.Add(conn);
+                RefreshTree();
+                await conn.Populate();
+                RefreshTree();
+                Configuration.AddRecentConnection(new Config.Model.SavedConnection { ConnectionString = connectionString, Name = conn.Server.Name });
+            }
+            catch (Exception e)
+            {
+                if (conn != null && this.Connections.Contains(conn))
+                {
+                    this.Connections.Remove(conn);
+                    RefreshTree();
+                }
+                MessageBox.Show(e.Message, "Connection Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
