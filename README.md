@@ -1,6 +1,6 @@
 Netgun is as a very simple barebones MongoDB UI.
 
-![Netgun Screenshot](http://i.imgur.com/Hi4BSB9.png)
+![Netgun Screenshot](http://i.imgur.com/YajUbMT.png)
 
 Currently availible MongoDB UIs are all lacking in at least one of the following areas
 
