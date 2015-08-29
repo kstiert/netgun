@@ -14,12 +14,42 @@ namespace Netgun.Controls
             Styles[Style.BraceLight].BackColor = Color.LightGray;
             Styles[Style.BraceLight].ForeColor = Color.BlueViolet;
             Styles[Style.BraceBad].ForeColor = Color.Red;
-            //UpdateUI += HandleUpdateUI;
+            Styles[Style.Cpp.Number].ForeColor = Color.DarkOrange;
+            Styles[Style.Cpp.String].ForeColor = Color.Brown;
+            UpdateUI += HandleUpdateUI;
+            CharAdded += HandleCharAdded;
         }
 
         protected override bool IsInputKey(Keys keyData)
         {
-            return false; // Stops the terminal from eating all key input
+            // Stops the terminal from eating all key input (except arrows, it can have those)
+            return keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down;
+        }
+
+        private void HandleCharAdded(object sender, CharAddedEventArgs e)
+        {
+            // Find the word start
+            var currentPos = CurrentPosition;
+            var wordStartPos = WordStartPosition(currentPos, false);
+
+            int lenEntered = 0;
+
+            // WordStartPosition doesn't cound $
+            if(GetCharAt(wordStartPos - 1) == '$')
+            {
+                lenEntered = currentPos - wordStartPos + 1;
+            }
+
+            // Start completion if you type a $
+            if(e.Char == '$')
+            {
+                lenEntered = 1;
+            }
+
+            if (lenEntered > 0)
+            {
+                AutoCShow(lenEntered, "$ $add $addToSet $all $allElementsTrue $and $anyElementTrue $avg $bit $cmp $comment $concat $cond $currentDate $dateToString $dayOfMonth $dayOfWeek $dayOfYear $divide $each $elemMatch $eq $exists $explain $first $geoIntersects $geoNear $geoWithin $group $gt $gte $hint $hour $ifNull $in $inc $isolated $last $let $limit $literal $lt $lte $map $match $max $maxScan $maxTimeMS $meta $millisecond $min $minute $mod $month $mul $multiply $natural $ne $near $nearSphere $nin $nor $not $or $orderby $out $pop $position $project $pull $pullAll $push $pushAll $query $redact $regex $rename $returnKey $second $set $setDifference $setEquals $setIntersection $setIsSubset $setOnInsert $setUnion $showDiskLoc $size $skip $slice $snapshot $sort $strcasecmp $substr $subtract $sum $text $toLower $toUpper $type $unset $unwind $week $where $year");
+            }   
         }
 
         private void HandleUpdateUI(object sender, UpdateUIEventArgs e)
@@ -44,17 +74,8 @@ namespace Netgun.Controls
                     bracePos2 = BraceMatch(bracePos1);
                     if (bracePos2 == Scintilla.InvalidPosition)
                     {
-                        if (GetCharAt(bracePos1) == '{')
-                        {
-                            InsertText(bracePos1 + 1, ":}");
-                            BraceHighlight(bracePos1, bracePos1 + 2);
-                            HighlightGuide = GetColumn(bracePos1);
-                        }
-                        else
-                        {
-                            BraceBadLight(bracePos1);
-                            HighlightGuide = 0;
-                        }
+                        BraceBadLight(bracePos1);
+                        HighlightGuide = 0;
                     }
                     else
                     {
