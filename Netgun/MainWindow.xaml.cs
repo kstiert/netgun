@@ -55,7 +55,7 @@ namespace Netgun
             var connection = this.Connections.Single(c => c.ConnectionId == collection.ConnectionId);
             var documents = await connection.GetDocuments(collection.DatabaseName, collection.Name);
             var newTab = new DocumentsTab(collection.DatabaseName, collection.Name, connection, documents.Select(Document.FromBsonDocument).ToList());
-            newTab.Terminal.Text = string.Format("db.{0}.find()", collection.Name);
+            newTab.Terminal.Text = string.Format("db.{0}.find({{}})", collection.Name);
             MainTab.Items.Add(newTab);
             MainTab.SelectedItem = newTab;
         }
