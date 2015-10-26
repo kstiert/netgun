@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Netgun.Model;
 using System.Windows.Media;
-using System.Windows;
 
 namespace Netgun.Controls
 {
     /// <summary>
     /// Interaction logic for DocumentsTab.xaml
     /// </summary>
-    public partial class DocumentsTab : TabItem
+    public partial class DocumentsTab : TabItem, INotifyPropertyChanged
     {
         private CollectionViewSource _documentSource;
         private string _db;
         private MongoConnection _connection;
         private List<Document> _source;
         private int _page, _pageCount;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public DocumentsTab(string db, string collection, MongoConnection conn, List<Document> source)
         {
@@ -38,6 +39,10 @@ namespace Netgun.Controls
         }
 
         public string TabName { get; set; }
+
+        public bool LeftDisabled { get { return _page == 0; } }
+
+        public bool RightDisabled { get { return _page + 1 == TotalPages; } }
 
         public int TotalPages 
         { 
@@ -73,16 +78,19 @@ namespace Netgun.Controls
 
         private void Refresh()
         {
+
             _documentSource.Source = _source.Skip(_page * _pageCount).Take(_pageCount).ToList();
             _documentSource.View.Refresh();
-            this.PagingLabel.Content = string.Format("{0} of {1}", _page, TotalPages);
+            this.PagingLabel.Content = string.Format("{0} of {1}", _page + 1, TotalPages);
         }
 
         private void PageRight()
         {
-            if(_page < TotalPages)
+            if(_page + 1 < TotalPages)
             {
                 _page++;
+                OnPropertyChanged("LeftDisabled");
+                OnPropertyChanged("RightDisabled");
                 Refresh();
             }
         }
@@ -92,6 +100,8 @@ namespace Netgun.Controls
             if(_page > 0)
             {
                 _page--;
+                OnPropertyChanged("LeftDisabled");
+                OnPropertyChanged("RightDisabled");
                 Refresh();
             }
         }
@@ -107,6 +117,12 @@ namespace Netgun.Controls
             // Always use mouse wheel to scroll
             var scroll = MainGrid.GetScrollbar();
             scroll.ScrollToVerticalOffset(scroll.VerticalOffset - e.Delta);
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

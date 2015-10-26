@@ -34,11 +34,37 @@
             <ToolBar DockPanel.Dock="Top">
                 <Button Command="{Binding RunCommand}">Run</Button>
                 <Button Command="{Binding LeftCommand}" Width="24" Height="24">
-                    <Image Source="/Resources/left.png" />
+                    <Image>
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding LeftDisabled}" Value="False">
+                                        <Setter Property="Source" Value="/Resources/left.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding LeftDisabled}" Value="True">
+                                        <Setter Property="Source" Value="/Resources/left_disabled.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
                 </Button>
                 <Label Name="PagingLabel" >0 of 0</Label> 
                 <Button Command="{Binding RightCommand}" Width="24" Height="24">
-                    <Image Source="/Resources/right.png" />
+                    <Image>
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RightDisabled}" Value="False">
+                                        <Setter Property="Source" Value="/Resources/right.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding RightDisabled}" Value="True">
+                                        <Setter Property="Source" Value="/Resources/right_disabled.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
                 </Button>
             </ToolBar>
             <StackPanel DockPanel.Dock="Bottom">
