@@ -22,8 +22,8 @@ namespace Netgun.Controls
 
         protected override bool IsInputKey(Keys keyData)
         {
-            // Stops the terminal from eating all key input (except arrows, it can have those)
-            return keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down;
+            // Stops the terminal from eating all key input (except arrows/tab, it can have those)
+            return keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Tab;
         }
 
         private void HandleCharAdded(object sender, CharAddedEventArgs e)
