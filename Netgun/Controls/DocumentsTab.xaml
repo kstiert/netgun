@@ -24,7 +24,7 @@
         </DataTemplate>
     </TabItem.Resources>
     <TabItem.Header>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" MouseDown="TabHeader_OnMouseDown">
             <TextBlock Text="{Binding TabName}"/>
             <Button Click="CloseTab_Click" Margin="4" Width="15" Height="15" Padding="0">X</Button>
         </StackPanel>

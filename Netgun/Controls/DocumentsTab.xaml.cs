@@ -124,5 +124,12 @@ namespace Netgun.Controls
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void TabHeader_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Middle) return;
+            var tabs = (TabControl)this.Parent;
+            tabs.Items.Remove(this);
+        }
     }
 }
