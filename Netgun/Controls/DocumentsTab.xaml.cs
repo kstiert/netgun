@@ -72,7 +72,10 @@ namespace Netgun.Controls
                 StatusLabel.Content = e.Message;
                 StatusLabel.Background = Brushes.OrangeRed;
             }
-            
+
+            _page = 0;
+            OnPropertyChanged("LeftDisabled");
+            OnPropertyChanged("RightDisabled");
             Refresh();
         }
 
