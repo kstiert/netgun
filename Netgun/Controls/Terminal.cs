@@ -16,6 +16,7 @@ namespace Netgun.Controls
             Styles[Style.BraceBad].ForeColor = Color.Red;
             Styles[Style.Cpp.Number].ForeColor = Color.DarkOrange;
             Styles[Style.Cpp.String].ForeColor = Color.Brown;
+            Styles[Style.Cpp.Regex].ForeColor = Color.DarkOliveGreen;
             UpdateUI += HandleUpdateUI;
             CharAdded += HandleCharAdded;
         }
