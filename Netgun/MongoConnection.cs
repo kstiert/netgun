@@ -31,7 +31,7 @@ namespace Netgun
 
         public Task<List<BsonDocument>> GetDocuments(string db, string collection)
         {
-            return this._client.GetDatabase(db).GetCollection<BsonDocument>(collection).Find(b => true).ToListAsync();
+            return this._client.GetDatabase(db).GetCollection<BsonDocument>(collection).Find(b => true).Limit(5000).ToListAsync();
         }
 
         public List<BsonDocument> Eval(string db, string js)
@@ -65,7 +65,7 @@ namespace Netgun
                 }
             };
             shell.Start();
-            shell.StandardInput.WriteLine("DBQuery.shellBatchSize = {0}", int.MaxValue);
+            shell.StandardInput.WriteLine("DBQuery.shellBatchSize = {0}", 5000);
             shell.BeginOutputReadLine();
             shell.StandardInput.WriteLine(Regex.Split(js, "\r\n|\r|\n")[0]);
             shell.StandardInput.WriteLine(); // Break out of any unmatched parens
