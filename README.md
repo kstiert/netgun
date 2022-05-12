@@ -1,3 +1,5 @@
+:x: **ARCHIVED** :x:
+
 Netgun is as a very simple barebones MongoDB UI.
 
 ![Netgun Screenshot](http://i.imgur.com/YajUbMT.png)
